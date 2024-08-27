@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Define the base conda path and environment name
-CONDA_BASE="/home/rawalk/anaconda3"
+CONDA_BASE="/opt/conda"
 ENV_NAME="sapiens"
 PYTHON_VERSION="3.10"
-PYTORCH_VERSION="pytorch-cuda=12.1"
+PYTORCH_VERSION="pytorch-cuda=12.4"
 
 # Update with the path to your local conda directory
 source "${CONDA_BASE}/etc/profile.d/conda.sh"
