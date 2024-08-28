@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd ../../.. || exit
-SAPIENS_CHECKPOINT_ROOT=/uca/rawalk/sapiens_lite_host
+SAPIENS_CHECKPOINT_ROOT=/root/sapiens/weights
 
 MODE='torchscript' ## original. no optimizations (slow). full precision inference.
 # MODE='bfloat16' ## A100 gpus. faster inference at bfloat16
@@ -11,7 +11,7 @@ SAPIENS_CHECKPOINT_ROOT=$SAPIENS_CHECKPOINT_ROOT/$MODE
 
 #----------------------------set your input and output directories----------------------------------------------
 INPUT='../pose/demo/data/itw_videos/reel1'
-OUTPUT='/home/rawalk/Desktop/sapiens/pose/Outputs/vis/itw_videos/reel1_pose17'
+OUTPUT='/root/sapiens/pose/Outputs/vis/itw_videos/reel1_pose17'
 
 #--------------------------MODEL CARD---------------
 # MODEL_NAME='sapiens_0.3b'; CHECKPOINT=coming soon!
@@ -19,10 +19,13 @@ OUTPUT='/home/rawalk/Desktop/sapiens/pose/Outputs/vis/itw_videos/reel1_pose17'
 # MODEL_NAME='sapiens_1b'; CHECKPOINT=coming soon!
 # MODEL_NAME='sapiens_2b'; CHECKPOINT=coming soon!
 
+CHECKPOINT=$SAPIENS_CHECKPOINT_ROOT/sapiens_1b_goliath_best_goliath_AP_640_torchscript.pt2
 OUTPUT=$OUTPUT/$MODEL_NAME
 
-DETECTION_CONFIG_FILE='../pose/demo/mmdetection_cfg/rtmdet_m_640-8xb32_coco-person_no_nms.py'
-DETECTION_CHECKPOINT=$SAPIENS_CHECKPOINT_ROOT/detector/checkpoints/rtmpose/rtmdet_m_8xb32-100e_coco-obj365-person-235e8209.pth
+# DETECTION_CONFIG_FILE='../pose/demo/mmdetection_cfg/rtmdet_m_640-8xb32_coco-person_no_nms.py'
+# DETECTION_CHECKPOINT=$SAPIENS_CHECKPOINT_ROOT/detector/checkpoints/rtmpose/rtmdet_m_8xb32-100e_coco-obj365-person-235e8209.pth
+DETECTION_CONFIG_FILE=''
+DETECTION_CHECKPOINT=''
 
 #---------------------------VISUALIZATION PARAMS--------------------------------------------------
 LINE_THICKNESS=3 ## line thickness of the skeleton
@@ -81,8 +84,6 @@ for ((i=0; i<TOTAL_JOBS; i++)); do
   CUDA_VISIBLE_DEVICES=${VALID_GPU_IDS[GPU_ID]} python ${RUN_FILE} \
     ${CHECKPOINT} \
     --num_keypoints 17 \
-    --det-config ${DETECTION_CONFIG_FILE} \
-    --det-checkpoint ${DETECTION_CHECKPOINT} \
     --batch-size ${BATCH_SIZE} \
     --input "${INPUT}/image_paths_$((i+1)).txt" \
     --output-root="${OUTPUT}" \
